@@ -2,7 +2,7 @@
 // Written by Peter Golde
 // Copyright (c) 2004-2005, Wintellect
 //
-// Use and restribution of this code is subject to the license agreement 
+// Use and restribution of this code is subject to the license agreement
 // contained in the file "License.txt" accompanying this file.
 //******************************
 
@@ -296,7 +296,7 @@ namespace Wintellect.PowerCollections.Tests
             Assert.AreEqual(expected.Length, i);
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void FailFastEnumerator1()
         {
             Set<double> set1 = new Set<double>();
@@ -308,13 +308,17 @@ namespace Wintellect.PowerCollections.Tests
             }
 
             // should throw once the set is modified.
-            foreach (double k in set1) {
-                if (k > 3.0)
-                    set1.Add(1.0);
-            }
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                foreach (double k in set1)
+                {
+                    if (k > 3.0)
+                        set1.Add(1.0);
+                }
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void FailFastEnumerator2()
         {
             Set<double> set1 = new Set<double>();
@@ -326,10 +330,14 @@ namespace Wintellect.PowerCollections.Tests
             }
 
             // should throw once the set is modified.
-            foreach (double k in set1) {
-                if (k > 3.0)
-                    set1.Clear();
-            }
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                foreach (double k in set1)
+                {
+                    if (k > 3.0)
+                        set1.Clear();
+                }
+            });
         }
 
         [Test]
@@ -453,7 +461,7 @@ namespace Wintellect.PowerCollections.Tests
 
         class NotCloneable { }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void CantCloneContents()
         {
             Set<NotCloneable> set1 = new Set<NotCloneable>();
@@ -461,7 +469,10 @@ namespace Wintellect.PowerCollections.Tests
             set1.Add(new NotCloneable());
             set1.Add(new NotCloneable());
 
-            Set<NotCloneable> set2 = set1.CloneContents();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                Set<NotCloneable> set2 = set1.CloneContents();
+            });
         }
 
         // Strange comparer that uses modulo arithmetic.
@@ -543,7 +554,7 @@ namespace Wintellect.PowerCollections.Tests
             {
                 return value.ToString();
             }
-        
+
             #region IEquatable<GenComparable> Members
 
             bool IEquatable<GenComparable>.Equals(GenComparable other)
@@ -856,20 +867,26 @@ namespace Wintellect.PowerCollections.Tests
             Assert.AreEqual(0, set3.Count);
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void InconsistentComparisons1()
         {
             Set<int> setOdds = new Set<int>(new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25 });
             Set<int> setDigits = new Set<int>(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new GOddEvenEqualityComparer());
-            setOdds.SymmetricDifferenceWith(setDigits);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                setOdds.SymmetricDifferenceWith(setDigits);
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void InconsistentComparisons2()
         {
             Set<string> set1 = new Set<string>(new string[] { "foo", "Bar" }, StringComparer.CurrentCulture);
             Set<string> set2 = new Set<string>(new string[] { "bada", "bing" }, StringComparer.InvariantCulture);
-            set1.Intersection(set2);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                set1.Intersection(set2);
+            });
         }
 
         [Test]
@@ -914,8 +931,8 @@ namespace Wintellect.PowerCollections.Tests
         {
             UniqueStuff d = new UniqueStuff(), result = new UniqueStuff();
 
-            d.objects = new InterfaceTests.Unique[] { 
-                new InterfaceTests.Unique("1"), new InterfaceTests.Unique("2"), new InterfaceTests.Unique("3"), new InterfaceTests.Unique("4"), new InterfaceTests.Unique("5"), new InterfaceTests.Unique("6"), 
+            d.objects = new InterfaceTests.Unique[] {
+                new InterfaceTests.Unique("1"), new InterfaceTests.Unique("2"), new InterfaceTests.Unique("3"), new InterfaceTests.Unique("4"), new InterfaceTests.Unique("5"), new InterfaceTests.Unique("6"),
                 new InterfaceTests.Unique("cool"), new InterfaceTests.Unique("elvis"), new InterfaceTests.Unique("hello"), new InterfaceTests.Unique("foo"), new InterfaceTests.Unique("world"), new InterfaceTests.Unique("elvis"), new InterfaceTests.Unique(null), null,
                 new InterfaceTests.Unique("7"), new InterfaceTests.Unique("8"), new InterfaceTests.Unique("9"), new InterfaceTests.Unique("10"), new InterfaceTests.Unique("11"), new InterfaceTests.Unique("12") };
             d.set = new Set<InterfaceTests.Unique>();

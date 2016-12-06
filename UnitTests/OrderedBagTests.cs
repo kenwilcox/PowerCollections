@@ -2,7 +2,7 @@
 // Written by Peter Golde
 // Copyright (c) 2004-2005, Wintellect
 //
-// Use and restribution of this code is subject to the license agreement 
+// Use and restribution of this code is subject to the license agreement
 // contained in the file "License.txt" accompanying this file.
 //******************************
 
@@ -174,15 +174,15 @@ namespace Wintellect.PowerCollections.Tests
         {
             OrderedBag<string> bag1 = new OrderedBag<string>(StringComparer.InvariantCultureIgnoreCase);
 
-            bag1.Add("Hello"); 
-            bag1.Add("foo"); 
-            bag1.Add(""); 
-            bag1.Add("HELLO"); 
-            bag1.Add("foo"); 
-            bag1.Add(null); 
-            bag1.Add("hello"); 
-            bag1.Add("Eric"); 
-            bag1.Add(null); 
+            bag1.Add("Hello");
+            bag1.Add("foo");
+            bag1.Add("");
+            bag1.Add("HELLO");
+            bag1.Add("foo");
+            bag1.Add(null);
+            bag1.Add("hello");
+            bag1.Add("Eric");
+            bag1.Add(null);
 
             InterfaceTests.TestReadWriteCollectionGeneric(bag1, new string[] { null, null, "", "Eric", "foo", "foo", "Hello", "HELLO", "hello" }, true, null);
         }
@@ -200,7 +200,7 @@ namespace Wintellect.PowerCollections.Tests
             bag1.Add(null);
             bag1.Add("hello");
             bag1.Add("Eric");
-            bag1.Add(null); 
+            bag1.Add(null);
 
             Assert.AreEqual(bag1[0], null);
             Assert.AreEqual(bag1[1], null);
@@ -328,8 +328,8 @@ namespace Wintellect.PowerCollections.Tests
             bool b;
 
             b = bag1.Remove("Eric"); Assert.IsFalse(b);
-            bag1.Add("hello"); 
-            bag1.Add("foo"); 
+            bag1.Add("hello");
+            bag1.Add("foo");
             bag1.Add(null);
             bag1.Add(null);
             bag1.Add("HELLO");
@@ -341,10 +341,10 @@ namespace Wintellect.PowerCollections.Tests
             b = bag1.Remove(null); Assert.IsTrue(b);
             b = bag1.Remove(null); Assert.IsFalse(b);
             bag1.Add("Hello");
-            bag1.Add("Eric"); 
-            bag1.Add(null); 
+            bag1.Add("Eric");
+            bag1.Add(null);
             b = bag1.Remove(null); Assert.IsTrue(b);
-            bag1.Add("ERIC"); 
+            bag1.Add("ERIC");
             b = bag1.Remove("eRic"); Assert.IsTrue(b);
             b = bag1.Remove("eRic"); Assert.IsTrue(b);
             bag1.Clear();
@@ -834,28 +834,28 @@ namespace Wintellect.PowerCollections.Tests
             InterfaceTests.TestReadWriteCollectionGeneric(bag3, new int[] { -21, -17, 1, 1, 7, 7, 9, 11, 13, 15, 19 }, true);
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void InconsistentComparisons1()
         {
             OrderedBag<int> bagOdds = new OrderedBag<int>(new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25 });
             OrderedBag<int> bagDigits = new OrderedBag<int>(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, ComparersTests.CompareOddEven);
-            bagOdds.UnionWith(bagDigits);
+            Assert.Throws<InvalidOperationException>(() => bagOdds.UnionWith(bagDigits));
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void InconsistentComparisons2()
         {
             OrderedBag<int> bagOdds = new OrderedBag<int>(new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25 });
             OrderedBag<int> bagDigits = new OrderedBag<int>(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new GOddEvenComparer());
-            bagOdds.SymmetricDifferenceWith(bagDigits);
+            Assert.Throws<InvalidOperationException>(() => bagOdds.SymmetricDifferenceWith(bagDigits));
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void InconsistentComparisons3()
         {
             OrderedBag<string> bag1 = new OrderedBag<string>(new string[] { "foo", "Bar" }, StringComparer.CurrentCulture);
             OrderedBag<string> bag2 = new OrderedBag<string>(new string[] { "bada", "bing" }, StringComparer.InvariantCulture);
-            bag1.Intersection(bag2);
+            Assert.Throws<InvalidOperationException>(() => bag1.Intersection(bag2));
         }
 
         [Test]
@@ -871,19 +871,25 @@ namespace Wintellect.PowerCollections.Tests
         }
 
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void NotComparable1()
         {
-            OrderedBag<UncomparableClass1> bag1 = new OrderedBag<UncomparableClass1>();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedBag<UncomparableClass1> bag1 = new OrderedBag<UncomparableClass1>();
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void NotComparable2()
         {
-            OrderedBag<UncomparableClass2> bag1 = new OrderedBag<UncomparableClass2>();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedBag<UncomparableClass2> bag1 = new OrderedBag<UncomparableClass2>();
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void FailFastEnumerator1()
         {
             OrderedBag<double> bag1 = new OrderedBag<double>();
@@ -895,13 +901,17 @@ namespace Wintellect.PowerCollections.Tests
             }
 
             // should throw once the bag is modified.
-            foreach (double k in bag1) {
-                if (k > 3.0)
-                    bag1.Add(1.0);
-            }
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                foreach (double k in bag1)
+                {
+                    if (k > 3.0)
+                        bag1.Add(1.0);
+                }
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void FailFastEnumerator2()
         {
             OrderedBag<double> bag1 = new OrderedBag<double>();
@@ -913,10 +923,14 @@ namespace Wintellect.PowerCollections.Tests
             }
 
             // should throw once the bag is modified.
-            foreach (double k in bag1) {
-                if (k > 3.0)
-                    bag1.Clear();
-            }
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                foreach (double k in bag1)
+                {
+                    if (k > 3.0)
+                        bag1.Clear();
+                }
+            });
         }
 
         // Check a View to make sure it has the right stuff.
@@ -1021,20 +1035,18 @@ namespace Wintellect.PowerCollections.Tests
             InterfaceTests.TestReadWriteCollectionGeneric(bag1, new int[] { 1, 1, 1, 3, 4, 4, 11, 14, 22 }, true);
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ViewAddException1()
         {
             OrderedBag<int> bag1 = new OrderedBag<int>(new int[] { 1, 1, 3, 4, 6, 6, 6, 8, 9, 11, 14, 22 });
-
-            bag1.Range(3, true, 8, false).Add(8);
+            Assert.Throws<ArgumentException>(() => bag1.Range(3, true, 8, false).Add(8));
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ViewAddException2()
         {
             OrderedBag<int> bag1 = new OrderedBag<int>(new int[] { 1, 1, 3, 4, 6, 6, 6, 8, 9, 11, 14, 22 });
-
-            bag1.Range(3, true, 8, false).Add(2);
+            Assert.Throws<ArgumentException>(() => bag1.Range(3, true, 8, false).Add(2));
         }
 
         [Test]
@@ -1157,7 +1169,7 @@ namespace Wintellect.PowerCollections.Tests
 
         class NotCloneable { }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void CantCloneContents()
         {
             OrderedBag<NotCloneable> bag1 = new OrderedBag<NotCloneable>();
@@ -1165,7 +1177,8 @@ namespace Wintellect.PowerCollections.Tests
             bag1.Add(new NotCloneable());
             bag1.Add(new NotCloneable());
 
-            OrderedBag<NotCloneable> bag2 = bag1.CloneContents();
+            OrderedBag<NotCloneable> bag2;
+            Assert.Throws<InvalidOperationException>(() => bag2 = bag1.CloneContents());
         }
 
         [Test]
@@ -1383,7 +1396,7 @@ namespace Wintellect.PowerCollections.Tests
 
             OrderedBag<string> result = (OrderedBag<string>)InterfaceTests.SerializeRoundTrip(d);
 
-            InterfaceTests.TestReadWriteCollectionGeneric<string>((ICollection<string>)result, 
+            InterfaceTests.TestReadWriteCollectionGeneric<string>((ICollection<string>)result,
                 new string[] { null, null, "1", "10", "11", "12", "2", "3", "4", "5", "6", "7", "8", "9", "cool", "eLVIs", "elvis", "foo", "hello", "Hello", "WORLD" }, true);
         }
 

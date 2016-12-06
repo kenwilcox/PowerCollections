@@ -2,7 +2,7 @@
 // Written by Peter Golde
 // Copyright (c) 2004-2005, Wintellect
 //
-// Use and restribution of this code is subject to the license agreement 
+// Use and restribution of this code is subject to the license agreement
 // contained in the file "License.txt" accompanying this file.
 //******************************
 
@@ -463,7 +463,7 @@ namespace Wintellect.PowerCollections.Tests
             set1.RemoveAll(delegate(double d) { return Math.Abs(d) > 5; });
             InterfaceTests.TestReadWriteCollectionGeneric(set1, new double[] { -0.04, 1.2, 1.78, 4.5 }, true, null);
 
-            set1 = new OrderedSet<double>(new double[] { 4.5, 1.2, 7.6, -0.04, -7.6, 1.78, 10.11, 187.4 }); 
+            set1 = new OrderedSet<double>(new double[] { 4.5, 1.2, 7.6, -0.04, -7.6, 1.78, 10.11, 187.4 });
             set1.RemoveAll(delegate(double d) { return d == 0; });
             InterfaceTests.TestReadWriteCollectionGeneric(set1, new double[] { -7.6, -0.04, 1.2, 1.78, 4.5, 7.6, 10.11, 187.4 }, true, null);
 
@@ -759,28 +759,37 @@ namespace Wintellect.PowerCollections.Tests
             InterfaceTests.TestReadWriteCollectionGeneric(set3, new int[] { -21, -17, 1, 7, 9, 11, 13, 15, 19 }, true, null);
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void InconsistentComparisons1()
         {
             OrderedSet<int> setOdds = new OrderedSet<int>(new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25 });
             OrderedSet<int> setDigits = new OrderedSet<int>(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, ComparersTests.CompareOddEven);
-            setOdds.UnionWith(setDigits);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                setOdds.UnionWith(setDigits);
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void InconsistentComparisons2()
         {
             OrderedSet<int> setOdds = new OrderedSet<int>(new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25 });
             OrderedSet<int> setDigits = new OrderedSet<int>(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new GOddEvenComparer());
-            setOdds.SymmetricDifferenceWith(setDigits);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                setOdds.SymmetricDifferenceWith(setDigits);
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void InconsistentComparisons3()
         {
             OrderedSet<string> set1 = new OrderedSet<string>(new string[] { "foo", "Bar" }, StringComparer.CurrentCulture);
             OrderedSet<string> set2 = new OrderedSet<string>(new string[] { "bada", "bing"}, StringComparer.InvariantCulture);
-            set1.Intersection(set2);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                set1.Intersection(set2);
+            });
         }
 
         [Test]
@@ -796,19 +805,25 @@ namespace Wintellect.PowerCollections.Tests
         }
 
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void NotComparable1()
         {
-            OrderedSet<UncomparableClass1> set1 = new OrderedSet<UncomparableClass1>();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedSet<UncomparableClass1> set1 = new OrderedSet<UncomparableClass1>();
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void NotComparable2()
         {
-            OrderedSet<UncomparableClass2> set1 = new OrderedSet<UncomparableClass2>();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedSet<UncomparableClass2> set1 = new OrderedSet<UncomparableClass2>();
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void FailFastEnumerator1()
         {
             OrderedSet<double> set1 = new OrderedSet<double>();
@@ -820,13 +835,17 @@ namespace Wintellect.PowerCollections.Tests
             }
 
             // should throw once the set is modified.
-            foreach (double k in set1) {
-                if (k > 3.0)
-                    set1.Add(1.0);
-            }
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                foreach (double k in set1)
+                {
+                    if (k > 3.0)
+                        set1.Add(1.0);
+                }
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void FailFastEnumerator2()
         {
             OrderedSet<double> set1 = new OrderedSet<double>();
@@ -838,10 +857,14 @@ namespace Wintellect.PowerCollections.Tests
             }
 
             // should throw once the set is modified.
-            foreach (double k in set1) {
-                if (k > 3.0)
-                    set1.Clear();
-            }
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                foreach (double k in set1)
+                {
+                    if (k > 3.0)
+                        set1.Clear();
+                }
+            });
         }
 
         // Check a View to make sure it has the right stuff.
@@ -943,20 +966,24 @@ namespace Wintellect.PowerCollections.Tests
             InterfaceTests.TestReadWriteCollectionGeneric(set1, new int[] { 1, 3, 4, 6, 14, 22 }, true, null);
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ViewAddException1()
         {
             OrderedSet<int> set1 = new OrderedSet<int>(new int[] { 1, 3, 4, 6, 8, 9, 11, 14, 22 });
-
-            set1.Range(3, true, 8, false).Add(8);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                set1.Range(3, true, 8, false).Add(8);
+            });
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ViewAddException2()
         {
             OrderedSet<int> set1 = new OrderedSet<int>(new int[] { 1, 3, 4, 6, 8, 9, 11, 14, 22 });
-
-            set1.Range(3, true, 8, false).Add(2);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                set1.Range(3, true, 8, false).Add(2);
+            });
         }
 
         [Test]
@@ -1025,14 +1052,14 @@ namespace Wintellect.PowerCollections.Tests
         public void CloneContents()
         {
             OrderedSet<MyInt> set1 = new OrderedSet<MyInt>(
-                delegate(MyInt v1, MyInt v2) { 
+                delegate(MyInt v1, MyInt v2) {
                     if (v1 == null) {
                         return (v2 == null) ? 0 : -1;
                     }
                     else if (v2 == null)
                         return 1;
                     else
-                        return v2.value.CompareTo(v1.value); 
+                        return v2.value.CompareTo(v1.value);
                 });
 
             set1.Add(new MyInt(143));
@@ -1077,15 +1104,17 @@ namespace Wintellect.PowerCollections.Tests
 
         class NotCloneable { }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void CantCloneContents()
         {
             OrderedSet<NotCloneable> set1 = new OrderedSet<NotCloneable>();
 
             set1.Add(new NotCloneable());
             set1.Add(new NotCloneable());
-
-            OrderedSet<NotCloneable> set2 = set1.CloneContents();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedSet<NotCloneable> set2 = set1.CloneContents();
+            });
         }
 
         [Test]

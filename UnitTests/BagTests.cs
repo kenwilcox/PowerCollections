@@ -2,7 +2,7 @@
 // Written by Peter Golde
 // Copyright (c) 2004-2005, Wintellect
 //
-// Use and restribution of this code is subject to the license agreement 
+// Use and restribution of this code is subject to the license agreement
 // contained in the file "License.txt" accompanying this file.
 //******************************
 
@@ -24,7 +24,7 @@ namespace Wintellect.PowerCollections.Tests
         [Test]
         public void RandomAddDelete()
         {
-            const int SIZE = 5000; 
+            const int SIZE = 5000;
             int[] count = new int[SIZE];
             Random rand = new Random(3);
             Bag<int> bag1 = new Bag<int>();
@@ -705,20 +705,20 @@ namespace Wintellect.PowerCollections.Tests
 
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void InconsistentComparisons1()
         {
             Bag<int> bagOdds = new Bag<int>(new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25 });
             Bag<int> bagDigits = new Bag<int>(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new GOddEvenEqualityComparer());
-            bagOdds.SymmetricDifferenceWith(bagDigits);
+            Assert.Throws<InvalidOperationException>(() => bagOdds.SymmetricDifferenceWith(bagDigits));
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void InconsistentComparisons2()
         {
             Bag<string> bag1 = new Bag<string>(new string[] { "foo", "Bar" }, StringComparer.CurrentCulture);
             Bag<string> bag2 = new Bag<string>(new string[] { "bada", "bing" }, StringComparer.InvariantCulture);
-            bag1.Intersection(bag2);
+            Assert.Throws<InvalidOperationException>(() => bag1.Intersection(bag2));
         }
 
         [Test]
@@ -730,7 +730,7 @@ namespace Wintellect.PowerCollections.Tests
         }
 
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void FailFastEnumerator1()
         {
             Bag<double> bag1 = new Bag<double>();
@@ -742,13 +742,17 @@ namespace Wintellect.PowerCollections.Tests
             }
 
             // should throw once the bag is modified.
-            foreach (double k in bag1) {
-                if (k > 3.0)
-                    bag1.Add(1.0);
-            }
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                foreach (double k in bag1)
+                {
+                    if (k > 3.0)
+                        bag1.Add(1.0);
+                }
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void FailFastEnumerator2()
         {
             Bag<double> bag1 = new Bag<double>();
@@ -760,10 +764,14 @@ namespace Wintellect.PowerCollections.Tests
             }
 
             // should throw once the bag is modified.
-            foreach (double k in bag1) {
-                if (k > 3.0)
-                    bag1.Clear();
-            }
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                foreach (double k in bag1)
+                {
+                    if (k > 3.0)
+                        bag1.Clear();
+                }
+            });
         }
 
 
@@ -862,7 +870,7 @@ namespace Wintellect.PowerCollections.Tests
 
         class NotCloneable { }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void CantCloneContents()
         {
             Bag<NotCloneable> bag1 = new Bag<NotCloneable>();
@@ -870,7 +878,8 @@ namespace Wintellect.PowerCollections.Tests
             bag1.Add(new NotCloneable());
             bag1.Add(new NotCloneable());
 
-            Bag<NotCloneable> bag2 = bag1.CloneContents();
+            Bag<NotCloneable> bag2;
+            Assert.Throws<InvalidOperationException>(() => bag2 = bag1.CloneContents());
         }
 
         // Strange comparer that uses modulo arithmetic.
@@ -992,8 +1001,8 @@ namespace Wintellect.PowerCollections.Tests
             UniqueStuff d = new UniqueStuff(), result = new UniqueStuff();
             InterfaceTests.Unique u1 = new InterfaceTests.Unique("cool"), u2 = new InterfaceTests.Unique("elvis");
 
-            d.objects = new InterfaceTests.Unique[] { 
-                new InterfaceTests.Unique("1"), new InterfaceTests.Unique("2"), new InterfaceTests.Unique("3"), new InterfaceTests.Unique("4"), new InterfaceTests.Unique("5"), new InterfaceTests.Unique("6"), 
+            d.objects = new InterfaceTests.Unique[] {
+                new InterfaceTests.Unique("1"), new InterfaceTests.Unique("2"), new InterfaceTests.Unique("3"), new InterfaceTests.Unique("4"), new InterfaceTests.Unique("5"), new InterfaceTests.Unique("6"),
                 u1, u2, new InterfaceTests.Unique("hello"), new InterfaceTests.Unique("foo"), new InterfaceTests.Unique("world"), u2, new InterfaceTests.Unique(null), null,
                 new InterfaceTests.Unique("7"), new InterfaceTests.Unique("8"), new InterfaceTests.Unique("9"), u1, u2, new InterfaceTests.Unique("3") };
             d.bag = new Bag<InterfaceTests.Unique>();

@@ -2,7 +2,7 @@
 // Written by Peter Golde
 // Copyright (c) 2004-2005, Wintellect
 //
-// Use and restribution of this code is subject to the license agreement 
+// Use and restribution of this code is subject to the license agreement
 // contained in the file "License.txt" accompanying this file.
 //******************************
 
@@ -988,7 +988,7 @@ namespace Wintellect.PowerCollections.Tests
 
         class NotCloneable { }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void CantCloneContents()
         {
             Deque<NotCloneable> deque1 = new Deque<NotCloneable>();
@@ -996,7 +996,8 @@ namespace Wintellect.PowerCollections.Tests
             deque1.Add(new NotCloneable());
             deque1.Add(new NotCloneable());
 
-            Deque<NotCloneable> deque2 = deque1.CloneContents();
+            Deque<NotCloneable> deque2;
+            Assert.Throws<InvalidOperationException>(() => deque2 = deque1.CloneContents());
         }
 
         [Test]
@@ -1174,8 +1175,8 @@ namespace Wintellect.PowerCollections.Tests
         {
             UniqueStuff d = new UniqueStuff(), result = new UniqueStuff();
 
-            d.objects = new InterfaceTests.Unique[] { 
-                new InterfaceTests.Unique("1"), new InterfaceTests.Unique("2"), new InterfaceTests.Unique("3"), new InterfaceTests.Unique("4"), new InterfaceTests.Unique("5"), new InterfaceTests.Unique("6"), 
+            d.objects = new InterfaceTests.Unique[] {
+                new InterfaceTests.Unique("1"), new InterfaceTests.Unique("2"), new InterfaceTests.Unique("3"), new InterfaceTests.Unique("4"), new InterfaceTests.Unique("5"), new InterfaceTests.Unique("6"),
                 new InterfaceTests.Unique("cool"), new InterfaceTests.Unique("elvis"), new InterfaceTests.Unique("hello"), new InterfaceTests.Unique("foo"), new InterfaceTests.Unique("world"), new InterfaceTests.Unique("elvis"), new InterfaceTests.Unique(null), null,
                 new InterfaceTests.Unique("7"), new InterfaceTests.Unique("8"), new InterfaceTests.Unique("9"), new InterfaceTests.Unique("10"), new InterfaceTests.Unique("11"), new InterfaceTests.Unique("12") };
             d.deque = new Deque<InterfaceTests.Unique>();

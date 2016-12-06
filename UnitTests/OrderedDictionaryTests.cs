@@ -2,7 +2,7 @@
 // Written by Peter Golde
 // Copyright (c) 2004-2005, Wintellect
 //
-// Use and restribution of this code is subject to the license agreement 
+// Use and restribution of this code is subject to the license agreement
 // contained in the file "License.txt" accompanying this file.
 //******************************
 
@@ -13,126 +13,126 @@ using NUnit.Framework;
 
 namespace Wintellect.PowerCollections.Tests
 {
-	/// <summary>
-	/// Tests for testing the OrderedDictionary class.
-	/// </summary>
-	[TestFixture]
-	public class OrderedDictionaryTests
-	{
-		const int LENGTH = 1200;			// length of each random array of values.
-		const int ITERATIONS = 80;		// number of iterations
-		private OrderedDictionary<int,string> dict;
+    /// <summary>
+    /// Tests for testing the OrderedDictionary class.
+    /// </summary>
+    [TestFixture]
+    public class OrderedDictionaryTests
+    {
+        const int LENGTH = 1200;			// length of each random array of values.
+        const int ITERATIONS = 80;		// number of iterations
+        private OrderedDictionary<int,string> dict;
 
-		/// <summary>
-		/// Create a string from an integer
-		/// </summary>
-		/// <param name="i">The int.</param>
-		/// <returns>The string made from the int.</returns>
-		private string StringFromInt(int i)
-		{
-			return string.Format("e{0}", i);
-		}
+        /// <summary>
+        /// Create a string from an integer
+        /// </summary>
+        /// <param name="i">The int.</param>
+        /// <returns>The string made from the int.</returns>
+        private string StringFromInt(int i)
+        {
+            return string.Format("e{0}", i);
+        }
 
-		/// <summary>
-		/// Create a random array of values.
-		/// </summary>
-		/// <param name="seed">Seed for random number generators</param>
-		/// <param name="length">Length of array</param>
-		/// <param name="max">Maximum value of number. Should be much 
-		/// greater than length.</param>
-		/// <param name="allowDups">Whether to allow duplicate elements.</param>
-		/// <returns></returns>
-		private int[] CreateRandomArray(int seed, int length, int max, bool allowDups)
-		{
-			Random rand = new Random(seed);
-			int[] a = new int[length];
+        /// <summary>
+        /// Create a random array of values.
+        /// </summary>
+        /// <param name="seed">Seed for random number generators</param>
+        /// <param name="length">Length of array</param>
+        /// <param name="max">Maximum value of number. Should be much
+        /// greater than length.</param>
+        /// <param name="allowDups">Whether to allow duplicate elements.</param>
+        /// <returns></returns>
+        private int[] CreateRandomArray(int seed, int length, int max, bool allowDups)
+        {
+            Random rand = new Random(seed);
+            int[] a = new int[length];
 
-			for (int i = 0; i < a.Length; ++i)
-				a[i] = -1;
+            for (int i = 0; i < a.Length; ++i)
+                a[i] = -1;
 
-			for (int el = 0; el < a.Length; ++el)
-			{
-				int value;
+            for (int el = 0; el < a.Length; ++el)
+            {
+                int value;
 
-				do
-				{
-					value = rand.Next(max);
-				} while (!allowDups && Array.IndexOf(a, value) >= 0);
+                do
+                {
+                    value = rand.Next(max);
+                } while (!allowDups && Array.IndexOf(a, value) >= 0);
 
-				a[el] = value;
-			}
+                a[el] = value;
+            }
 
-			return a;
-		}
-		/// <summary>
-		/// Insert all the elements of an integer array into the dictionary. The
-		/// values in the dictionary are the indexes of the array.
-		/// </summary>
-		/// <param name="a">Array of values to insert.</param>
-		private void InsertArray(int[] a)
-		{
-			for (int i = 0; i < a.Length; ++i)
-			{
-				string s = StringFromInt(i);
+            return a;
+        }
+        /// <summary>
+        /// Insert all the elements of an integer array into the dictionary. The
+        /// values in the dictionary are the indexes of the array.
+        /// </summary>
+        /// <param name="a">Array of values to insert.</param>
+        private void InsertArray(int[] a)
+        {
+            for (int i = 0; i < a.Length; ++i)
+            {
+                string s = StringFromInt(i);
 
-				dict.Add(a[i], s);
-			}
-		}
+                dict.Add(a[i], s);
+            }
+        }
 
-		/// <summary>
-		/// Iterate the dictionary, making sure that everything is in order, the values
-		/// match, and that all the keys in the array are found.
-		/// </summary>
-		/// <param name="a"></param>
-		private void CheckArray(int[] a)
-		{
-			int count = 0;
-			int lastKey = -1;
+        /// <summary>
+        /// Iterate the dictionary, making sure that everything is in order, the values
+        /// match, and that all the keys in the array are found.
+        /// </summary>
+        /// <param name="a"></param>
+        private void CheckArray(int[] a)
+        {
+            int count = 0;
+            int lastKey = -1;
 
-			foreach (KeyValuePair<int,string> pair in dict)
-			{
-				Assert.IsTrue(lastKey < pair.Key, "Keys are not in order");
+            foreach (KeyValuePair<int,string> pair in dict)
+            {
+                Assert.IsTrue(lastKey < pair.Key, "Keys are not in order");
 
-				int index = Array.IndexOf(a, pair.Key);
+                int index = Array.IndexOf(a, pair.Key);
 
-				Assert.IsTrue(index >= 0, "key wasn't found in the array");
-				Assert.AreEqual(StringFromInt(index), pair.Value);
-				a[index] = -1;
+                Assert.IsTrue(index >= 0, "key wasn't found in the array");
+                Assert.AreEqual(StringFromInt(index), pair.Value);
+                a[index] = -1;
 
-				++count;
+                ++count;
                 lastKey = pair.Key;
-			}
+            }
 
-			Assert.AreEqual(count, dict.Count, "Number of keys found is not correct");
+            Assert.AreEqual(count, dict.Count, "Number of keys found is not correct");
 
-			// All the items should have been knocked out.
-			foreach (int x in a)
-			{
-				Assert.AreEqual(-1, x);
-			}
-		}
+            // All the items should have been knocked out.
+            foreach (int x in a)
+            {
+                Assert.AreEqual(-1, x);
+            }
+        }
 
-		/// <summary>
-		/// Insert a bunch of entries into the tree, make sure that the count is correct, 
-		/// and that they iterate correct in order.
-		/// </summary>
-		[Test]
-		public void RandomAdd()
-		{
-			for (int iter = 0; iter < ITERATIONS; ++iter)
-			{
-				// Insert the array into the dictionary.
-				dict = new OrderedDictionary<int,string>();
+        /// <summary>
+        /// Insert a bunch of entries into the tree, make sure that the count is correct,
+        /// and that they iterate correct in order.
+        /// </summary>
+        [Test]
+        public void RandomAdd()
+        {
+            for (int iter = 0; iter < ITERATIONS; ++iter)
+            {
+                // Insert the array into the dictionary.
+                dict = new OrderedDictionary<int,string>();
 
-				int[] a = CreateRandomArray(iter + 1, LENGTH, LENGTH * 10, false);
+                int[] a = CreateRandomArray(iter + 1, LENGTH, LENGTH * 10, false);
 
-				InsertArray(a);
+                InsertArray(a);
 
-				// Make sure the count is correct.
-				Assert.AreEqual(LENGTH, dict.Count);
-				CheckArray(a);
-			}
-		}
+                // Make sure the count is correct.
+                Assert.AreEqual(LENGTH, dict.Count);
+                CheckArray(a);
+            }
+        }
 
         private void CheckArgumentException(Exception e)
         {
@@ -188,47 +188,47 @@ namespace Wintellect.PowerCollections.Tests
 
 #if false
         /// <summary>
-		/// Test adding keys/values to the collection. Make sure the return value is right, and that
-		/// the keys are present in the collection afterward.
-		/// </summary>
-		[Test]
-		public void AddOrUpdate()
-		{
-			OrderedDictionary<double,int> dict1 = new OrderedDictionary<double,int>();
-			bool b;
+        /// Test adding keys/values to the collection. Make sure the return value is right, and that
+        /// the keys are present in the collection afterward.
+        /// </summary>
+        [Test]
+        public void AddOrUpdate()
+        {
+            OrderedDictionary<double,int> dict1 = new OrderedDictionary<double,int>();
+            bool b;
 
-			b = dict1.AddOrUpdate(4.67, 12);
-			Assert.IsFalse(b);
-			b = dict1.AddOrUpdate(double.NaN, -17);
-			Assert.IsFalse(b);
-			b = dict1.AddOrUpdate(double.PositiveInfinity, 0);
-			Assert.IsFalse(b);
-			b = dict1.AddOrUpdate(4.67, 187);
-			Assert.IsTrue(b);
-			b = dict1.AddOrUpdate(double.NegativeInfinity, 188921);
-			Assert.IsFalse(b);
-			b = dict1.AddOrUpdate(double.NegativeInfinity, 421);
-			Assert.IsTrue(b);
-			b = dict1.AddOrUpdate(4.67, 222);
-			Assert.IsTrue(b);
-			b = dict1.AddOrUpdate(double.MaxValue, 444);
-			Assert.IsFalse(b);
+            b = dict1.AddOrUpdate(4.67, 12);
+            Assert.IsFalse(b);
+            b = dict1.AddOrUpdate(double.NaN, -17);
+            Assert.IsFalse(b);
+            b = dict1.AddOrUpdate(double.PositiveInfinity, 0);
+            Assert.IsFalse(b);
+            b = dict1.AddOrUpdate(4.67, 187);
+            Assert.IsTrue(b);
+            b = dict1.AddOrUpdate(double.NegativeInfinity, 188921);
+            Assert.IsFalse(b);
+            b = dict1.AddOrUpdate(double.NegativeInfinity, 421);
+            Assert.IsTrue(b);
+            b = dict1.AddOrUpdate(4.67, 222);
+            Assert.IsTrue(b);
+            b = dict1.AddOrUpdate(double.MaxValue, 444);
+            Assert.IsFalse(b);
 
-			Assert.AreEqual(5, dict1.Count);
+            Assert.AreEqual(5, dict1.Count);
 
-			Assert.AreEqual(222, dict1[4.67]);
-			Assert.AreEqual(421, dict1[double.NegativeInfinity]);
-			Assert.AreEqual(0, dict1[double.PositiveInfinity]);
-			Assert.AreEqual(-17, dict1[double.NaN]);
-			Assert.AreEqual(444, dict1[double.MaxValue]);
+            Assert.AreEqual(222, dict1[4.67]);
+            Assert.AreEqual(421, dict1[double.NegativeInfinity]);
+            Assert.AreEqual(0, dict1[double.PositiveInfinity]);
+            Assert.AreEqual(-17, dict1[double.NaN]);
+            Assert.AreEqual(444, dict1[double.MaxValue]);
 
-			TestUtil.TestReadonlyCollectionGeneric(dict1.Keys, new double[] { double.NaN, double.NegativeInfinity, 4.67, double.MaxValue, double.PositiveInfinity }, true, "KeysCollection");
-			TestUtil.TestReadonlyCollectionGeneric(dict1.Values, new int[] { -17, 421, 222, 444, 0 }, true, "ValuesCollection");
-		}
+            TestUtil.TestReadonlyCollectionGeneric(dict1.Keys, new double[] { double.NaN, double.NegativeInfinity, 4.67, double.MaxValue, double.PositiveInfinity }, true, "KeysCollection");
+            TestUtil.TestReadonlyCollectionGeneric(dict1.Values, new int[] { -17, 421, 222, 444, 0 }, true, "ValuesCollection");
+        }
 #endif
 
         /// <summary>
-        /// Test updating. 
+        /// Test updating.
         /// </summary>
         [Test]
         public void Update()
@@ -273,32 +273,32 @@ namespace Wintellect.PowerCollections.Tests
 
         /// <summary>
         /// Test adding keys/values to the collection. Like the Add() test, but uses the indexer dict operation.
-		/// Make sure the return value is right, and that
-		/// the keys are present in the collection afterward.
-		/// </summary>
-		[Test]
-		public void IndexerSet()
-		{
-			OrderedDictionary<double,int> dict1 = new OrderedDictionary<double,int>();
+        /// Make sure the return value is right, and that
+        /// the keys are present in the collection afterward.
+        /// </summary>
+        [Test]
+        public void IndexerSet()
+        {
+            OrderedDictionary<double,int> dict1 = new OrderedDictionary<double,int>();
 
-			dict1[4.67] = 12;
-			dict1[double.NaN] = -17;
-			dict1[double.PositiveInfinity] = 0;
-			dict1[4.67] = 187;
-			dict1[double.NegativeInfinity] = 188921;
-			dict1[double.NegativeInfinity] = 421;
-			dict1[4.67] = 222;
-			dict1[double.MaxValue] = 444;
+            dict1[4.67] = 12;
+            dict1[double.NaN] = -17;
+            dict1[double.PositiveInfinity] = 0;
+            dict1[4.67] = 187;
+            dict1[double.NegativeInfinity] = 188921;
+            dict1[double.NegativeInfinity] = 421;
+            dict1[4.67] = 222;
+            dict1[double.MaxValue] = 444;
 
-			Assert.AreEqual(5, dict1.Count);
-			Assert.AreEqual(222, dict1[4.67]);
-			Assert.AreEqual(421, dict1[double.NegativeInfinity]);
-			Assert.AreEqual(0, dict1[double.PositiveInfinity]);
-			Assert.AreEqual(-17, dict1[double.NaN]);
-			Assert.AreEqual(444, dict1[double.MaxValue]);
-			InterfaceTests.TestReadonlyCollectionGeneric(dict1.Keys, new double[] { double.NaN, double.NegativeInfinity, 4.67, double.MaxValue, double.PositiveInfinity }, true, "KeysCollection");
-			InterfaceTests.TestReadonlyCollectionGeneric(dict1.Values, new int[] { -17, 421, 222, 444, 0 }, true, "ValuesCollection");
-		}
+            Assert.AreEqual(5, dict1.Count);
+            Assert.AreEqual(222, dict1[4.67]);
+            Assert.AreEqual(421, dict1[double.NegativeInfinity]);
+            Assert.AreEqual(0, dict1[double.PositiveInfinity]);
+            Assert.AreEqual(-17, dict1[double.NaN]);
+            Assert.AreEqual(444, dict1[double.MaxValue]);
+            InterfaceTests.TestReadonlyCollectionGeneric(dict1.Keys, new double[] { double.NaN, double.NegativeInfinity, 4.67, double.MaxValue, double.PositiveInfinity }, true, "KeysCollection");
+            InterfaceTests.TestReadonlyCollectionGeneric(dict1.Values, new int[] { -17, 421, 222, 444, 0 }, true, "ValuesCollection");
+        }
 
         [Test]
         public void IndexerGet()
@@ -322,38 +322,38 @@ namespace Wintellect.PowerCollections.Tests
             }
         }
 
-		/// <summary>
-		/// Test removing items from the tree.
-		///</summary>
-		[Test]
-		public void Remove()
-		{
-			OrderedDictionary<double,int> dict1 = new OrderedDictionary<double,int>();
-			bool b;
+        /// <summary>
+        /// Test removing items from the tree.
+        ///</summary>
+        [Test]
+        public void Remove()
+        {
+            OrderedDictionary<double,int> dict1 = new OrderedDictionary<double,int>();
+            bool b;
 
-			dict1[4.67] =  12;
-			dict1[double.NaN] =  -17;
-			dict1[double.PositiveInfinity] =  0;
-			dict1[4.67] =  187;
-			dict1[double.NegativeInfinity] =  188921;
-			dict1[double.NegativeInfinity] =  421;
-			dict1[4.67] =  222;
-			dict1[double.MaxValue] =  444;
+            dict1[4.67] =  12;
+            dict1[double.NaN] =  -17;
+            dict1[double.PositiveInfinity] =  0;
+            dict1[4.67] =  187;
+            dict1[double.NegativeInfinity] =  188921;
+            dict1[double.NegativeInfinity] =  421;
+            dict1[4.67] =  222;
+            dict1[double.MaxValue] =  444;
 
-			b = dict1.Remove(double.NaN);
-			Assert.IsTrue(b);
-			b = dict1.Remove(double.NaN);
-			Assert.IsFalse(b);
-			b = dict1.Remove(double.MinValue);
-			Assert.IsFalse(b);
-			b = dict1.Remove(4.67);
-			Assert.IsTrue(b);
-			b = dict1.Remove(4.67);
-			Assert.IsFalse(b);
-			
-			InterfaceTests.TestReadonlyCollectionGeneric(dict1.Keys, new double[] { double.NegativeInfinity, double.MaxValue, double.PositiveInfinity }, true, "KeysCollection");
-			InterfaceTests.TestReadonlyCollectionGeneric(dict1.Values, new int[] { 421, 444, 0 }, true, "ValuesCollection");
-		}
+            b = dict1.Remove(double.NaN);
+            Assert.IsTrue(b);
+            b = dict1.Remove(double.NaN);
+            Assert.IsFalse(b);
+            b = dict1.Remove(double.MinValue);
+            Assert.IsFalse(b);
+            b = dict1.Remove(4.67);
+            Assert.IsTrue(b);
+            b = dict1.Remove(4.67);
+            Assert.IsFalse(b);
+
+            InterfaceTests.TestReadonlyCollectionGeneric(dict1.Keys, new double[] { double.NegativeInfinity, double.MaxValue, double.PositiveInfinity }, true, "KeysCollection");
+            InterfaceTests.TestReadonlyCollectionGeneric(dict1.Values, new int[] { 421, 444, 0 }, true, "ValuesCollection");
+        }
 
         [Test]
         public void TryGetValue()
@@ -392,7 +392,7 @@ namespace Wintellect.PowerCollections.Tests
         public void GetValueElseAdd()
         {
             OrderedDictionary<double, int> dict1 = new OrderedDictionary<double, int>();
-            bool b; 
+            bool b;
             int val;
 
             val = 12;
@@ -433,345 +433,352 @@ namespace Wintellect.PowerCollections.Tests
         }
 
         /// <summary>
-		/// Test clearing the dictionary.
-		/// </summary>
-		[Test]
-		public void Clear()
-		{
-			OrderedDictionary<string,double> dict1 = new OrderedDictionary<string,double>();
+        /// Test clearing the dictionary.
+        /// </summary>
+        [Test]
+        public void Clear()
+        {
+            OrderedDictionary<string,double> dict1 = new OrderedDictionary<string,double>();
 
-			Assert.AreEqual(0, dict1.Count);
+            Assert.AreEqual(0, dict1.Count);
 
-			dict1["hello"] = 4.5;
-			dict1["hi"] = 1.22;
-			dict1[""] = 7.6;
+            dict1["hello"] = 4.5;
+            dict1["hi"] = 1.22;
+            dict1[""] = 7.6;
 
-			Assert.AreEqual(3, dict1.Count);
+            Assert.AreEqual(3, dict1.Count);
 
-			dict1.Clear();
+            dict1.Clear();
 
-			Assert.AreEqual(0, dict1.Count);
-			InterfaceTests.TestReadonlyCollectionGeneric(dict1.Keys, new string[0], true, "KeysCollection");
-			InterfaceTests.TestReadonlyCollectionGeneric(dict1.Values, new double[0], true, "ValuesCollection");
+            Assert.AreEqual(0, dict1.Count);
+            InterfaceTests.TestReadonlyCollectionGeneric(dict1.Keys, new string[0], true, "KeysCollection");
+            InterfaceTests.TestReadonlyCollectionGeneric(dict1.Values, new double[0], true, "ValuesCollection");
 
-			Assert.IsFalse(dict1.ContainsKey("hello"));
-			Assert.IsFalse(dict1.ContainsKey("hi"));
-			Assert.IsFalse(dict1.ContainsKey("banana"));
-			Assert.IsFalse(dict1.ContainsKey(""));
-		}
-
-		/// <summary>
-		/// Test ContainsKey. Make sure it returns the right valuesl. 
-		/// </summary>
-		[Test]
-		public void ContainsKey()
-		{
-			OrderedDictionary<string,string> dict1 = new OrderedDictionary<string,string>();
-
-			dict1["b"] =  "foo";
-			dict1["r"] =  "bar";
-			dict1[""] =  "golde";
-			dict1["n"] =  "baz";
-			dict1["B"] =  "hello";
-			dict1[""] =  "peter";
-			dict1["n"] =  "horton";
-			dict1["x"] =  "hears";
-			dict1.Remove("n");
-			dict1["c"] =  "a who";
-			dict1["q"] =  null;
-
-			Assert.IsTrue(dict1.ContainsKey("b"));
-			Assert.IsTrue(dict1.ContainsKey("r"));
-			Assert.IsTrue(dict1.ContainsKey(""));
-			Assert.IsFalse(dict1.ContainsKey("n"));
-			Assert.IsTrue(dict1.ContainsKey("B"));
-			Assert.IsTrue(dict1.ContainsKey("x"));
-			Assert.IsTrue(dict1.ContainsKey("q"));
-			Assert.IsFalse(dict1.ContainsKey("a"));
-
-			dict1.Remove("");
-
-			Assert.IsFalse(dict1.ContainsKey(""));
-		}
-
-		class ComparableClass1: IComparable<ComparableClass1>
-		{
-			public int Value = 0;
-			int IComparable<ComparableClass1>.CompareTo(ComparableClass1 other)
-			{
-				if (Value > other.Value)
-					return 1;
-				else if (Value < other.Value)
-					return -1;
-				else
-					return 0;
-			}
+            Assert.IsFalse(dict1.ContainsKey("hello"));
+            Assert.IsFalse(dict1.ContainsKey("hi"));
+            Assert.IsFalse(dict1.ContainsKey("banana"));
+            Assert.IsFalse(dict1.ContainsKey(""));
         }
 
-		class ComparableClass2: IComparable
-		{
-			public int Value = 0;
-			int IComparable.CompareTo(object other)
-			{
-				if (other is ComparableClass2)
-				{
-					ComparableClass2 o = (ComparableClass2)other;
+        /// <summary>
+        /// Test ContainsKey. Make sure it returns the right valuesl.
+        /// </summary>
+        [Test]
+        public void ContainsKey()
+        {
+            OrderedDictionary<string,string> dict1 = new OrderedDictionary<string,string>();
 
-					if (Value > o.Value)
-						return 1;
-					else if (Value < o.Value)
-						return -1;
-					else
-						return 0;
-				}
-				else 
-					throw new ArgumentException("Argument of wrong type.", "other");
-			}
-		}
+            dict1["b"] =  "foo";
+            dict1["r"] =  "bar";
+            dict1[""] =  "golde";
+            dict1["n"] =  "baz";
+            dict1["B"] =  "hello";
+            dict1[""] =  "peter";
+            dict1["n"] =  "horton";
+            dict1["x"] =  "hears";
+            dict1.Remove("n");
+            dict1["c"] =  "a who";
+            dict1["q"] =  null;
 
-		// Not comparable, because the type parameter on ComparableClass is incorrect.
-		public class UncomparableClass1: IComparable<ComparableClass1>
-		{
-			public int Value = 0;
-			int IComparable<ComparableClass1>.CompareTo(ComparableClass1 other)
-			{
-				if (Value > other.Value)
-					return 1;
-				else if (Value < other.Value)
-					return -1;
-				else
-					return 0;
-			}
+            Assert.IsTrue(dict1.ContainsKey("b"));
+            Assert.IsTrue(dict1.ContainsKey("r"));
+            Assert.IsTrue(dict1.ContainsKey(""));
+            Assert.IsFalse(dict1.ContainsKey("n"));
+            Assert.IsTrue(dict1.ContainsKey("B"));
+            Assert.IsTrue(dict1.ContainsKey("x"));
+            Assert.IsTrue(dict1.ContainsKey("q"));
+            Assert.IsFalse(dict1.ContainsKey("a"));
+
+            dict1.Remove("");
+
+            Assert.IsFalse(dict1.ContainsKey(""));
+        }
+
+        class ComparableClass1: IComparable<ComparableClass1>
+        {
+            public int Value = 0;
+            int IComparable<ComparableClass1>.CompareTo(ComparableClass1 other)
+            {
+                if (Value > other.Value)
+                    return 1;
+                else if (Value < other.Value)
+                    return -1;
+                else
+                    return 0;
+            }
+        }
+
+        class ComparableClass2: IComparable
+        {
+            public int Value = 0;
+            int IComparable.CompareTo(object other)
+            {
+                if (other is ComparableClass2)
+                {
+                    ComparableClass2 o = (ComparableClass2)other;
+
+                    if (Value > o.Value)
+                        return 1;
+                    else if (Value < o.Value)
+                        return -1;
+                    else
+                        return 0;
+                }
+                else
+                    throw new ArgumentException("Argument of wrong type.", "other");
+            }
+        }
+
+        // Not comparable, because the type parameter on ComparableClass is incorrect.
+        public class UncomparableClass1: IComparable<ComparableClass1>
+        {
+            public int Value = 0;
+            int IComparable<ComparableClass1>.CompareTo(ComparableClass1 other)
+            {
+                if (Value > other.Value)
+                    return 1;
+                else if (Value < other.Value)
+                    return -1;
+                else
+                    return 0;
+            }
         }
 
         public class UncomparableClass2
-		{
-			public int Value = 0;
-		}
+        {
+            public int Value = 0;
+        }
 
-		/// <summary>
-		/// Make sure that the parameterless constructor on SimpleDictionary can be called with
-		/// a comparable struct and class.
-		/// </summary>
-		[Test]
-		public void SimpleConstruction()
-		{
-			OrderedDictionary<int,string> dict1 = new OrderedDictionary<int,string>();
-			OrderedDictionary<string,string> dict2 = new OrderedDictionary<string,string>();
-			OrderedDictionary<ComparableClass2,string> dict3 = new OrderedDictionary<ComparableClass2,string>();
-			OrderedDictionary<ComparableClass1,string> dict4 = new OrderedDictionary<ComparableClass1,string>();
-		}
+        /// <summary>
+        /// Make sure that the parameterless constructor on SimpleDictionary can be called with
+        /// a comparable struct and class.
+        /// </summary>
+        [Test]
+        public void SimpleConstruction()
+        {
+            OrderedDictionary<int,string> dict1 = new OrderedDictionary<int,string>();
+            OrderedDictionary<string,string> dict2 = new OrderedDictionary<string,string>();
+            OrderedDictionary<ComparableClass2,string> dict3 = new OrderedDictionary<ComparableClass2,string>();
+            OrderedDictionary<ComparableClass1,string> dict4 = new OrderedDictionary<ComparableClass1,string>();
+        }
 
-		/// <summary>
-		/// Check that a OrderedDictionary can't be instantiated on an incomparable type.
-		/// </summary>
-		[Test, ExpectedException(typeof(InvalidOperationException))]
-		public void NotComparable1()
-		{
-			OrderedDictionary<UncomparableClass1,string> dict1 = new OrderedDictionary<UncomparableClass1,string>();
-		}
+        /// <summary>
+        /// Check that a OrderedDictionary can't be instantiated on an incomparable type.
+        /// </summary>
+        [Test]
+        public void NotComparable1()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedDictionary<UncomparableClass1, string> dict1 = new OrderedDictionary<UncomparableClass1, string>();
+            });
+        }
 
-		/// <summary>
-		/// Check that a OrderedDictionary can't be instantiated on an incomparable type.
-		/// </summary>
-		[Test, ExpectedException(typeof(InvalidOperationException))]
-		public void NotComparable2()
-		{
-			OrderedDictionary<UncomparableClass2,string> dict2 = new OrderedDictionary<UncomparableClass2,string>();
-		}
+        /// <summary>
+        /// Check that a OrderedDictionary can't be instantiated on an incomparable type.
+        /// </summary>
+        [Test]
+        public void NotComparable2()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedDictionary<UncomparableClass2, string> dict2 = new OrderedDictionary<UncomparableClass2, string>();
+            });
 
-		/// <summary>
-		/// Check that IsReadOnly always returns false.
-		/// </summary>
-		[Test]
-		public void IsReadOnly()
-		{
-			OrderedDictionary<int,string> dict1 = new OrderedDictionary<int,string>();
+        }
 
-			Assert.IsFalse(((IDictionary)dict1).IsReadOnly, "IsReadOnly should be false");
-			Assert.IsFalse(((IDictionary<int,string>)dict1).IsReadOnly, "IsReadOnly should be false");
-		}
+        /// <summary>
+        /// Check that IsReadOnly always returns false.
+        /// </summary>
+        [Test]
+        public void IsReadOnly()
+        {
+            OrderedDictionary<int,string> dict1 = new OrderedDictionary<int,string>();
 
-		/// <summary>
-		/// Check that IsFixedSize always returns false.
-		/// </summary>
-		[Test]
-		public void IsFixedSize()
-		{
-			OrderedDictionary<int,string> dict1 = new OrderedDictionary<int,string>();
+            Assert.IsFalse(((IDictionary)dict1).IsReadOnly, "IsReadOnly should be false");
+            Assert.IsFalse(((IDictionary<int,string>)dict1).IsReadOnly, "IsReadOnly should be false");
+        }
 
-			Assert.IsFalse(((IDictionary)dict1).IsFixedSize, "IsFixedSize should be false");
-		}
+        /// <summary>
+        /// Check that IsFixedSize always returns false.
+        /// </summary>
+        [Test]
+        public void IsFixedSize()
+        {
+            OrderedDictionary<int,string> dict1 = new OrderedDictionary<int,string>();
 
-		/// <summary>
-		/// Check the Keys and Values collections.
-		/// </summary>
-		[Test]
-		public void KeysValuesCollections()
-		{
-			OrderedDictionary<string,int> dict1 = new OrderedDictionary<string,int>();
+            Assert.IsFalse(((IDictionary)dict1).IsFixedSize, "IsFixedSize should be false");
+        }
 
-			dict1.Add("q", 17);
-			dict1.Add("a", 143);
-			dict1.Add("r", -5);
-			dict1.Add("z", 0);
-			dict1.Add("x", 12);
-			dict1.Add("m", 17);
+        /// <summary>
+        /// Check the Keys and Values collections.
+        /// </summary>
+        [Test]
+        public void KeysValuesCollections()
+        {
+            OrderedDictionary<string,int> dict1 = new OrderedDictionary<string,int>();
 
-			ICollection keysCollection = ((IDictionary)dict1).Keys;
-			ICollection<string> keysGenCollection = dict1.Keys;
-			ICollection valuesCollection = ((IDictionary)dict1).Values;
-			ICollection<int> valuesGenCollection = dict1.Values;
+            dict1.Add("q", 17);
+            dict1.Add("a", 143);
+            dict1.Add("r", -5);
+            dict1.Add("z", 0);
+            dict1.Add("x", 12);
+            dict1.Add("m", 17);
 
-			InterfaceTests.TestCollection<string>(keysCollection, new string[] { "a", "m", "q", "r", "x", "z" }, true);
+            ICollection keysCollection = ((IDictionary)dict1).Keys;
+            ICollection<string> keysGenCollection = dict1.Keys;
+            ICollection valuesCollection = ((IDictionary)dict1).Values;
+            ICollection<int> valuesGenCollection = dict1.Values;
+
+            InterfaceTests.TestCollection<string>(keysCollection, new string[] { "a", "m", "q", "r", "x", "z" }, true);
             InterfaceTests.TestReadonlyCollectionGeneric<string>(keysGenCollection, new string[] { "a", "m", "q", "r", "x", "z" }, true, "KeysCollection");
             InterfaceTests.TestCollection<int>(valuesCollection, new int[] { 143, 17, 17, -5, 12, 0 }, true);
             InterfaceTests.TestReadonlyCollectionGeneric<int>(valuesGenCollection, new int[] { 143, 17, 17, -5, 12, 0 }, true, "ValuesCollection");
         }
 
-		/// <summary>
-		/// Check that null keys and values work correctly.
-		/// </summary>
-		[Test]
-		public void NullKeysValues()
-		{
-			OrderedDictionary<string,string> dict1 = new OrderedDictionary<string,string>();
+        /// <summary>
+        /// Check that null keys and values work correctly.
+        /// </summary>
+        [Test]
+        public void NullKeysValues()
+        {
+            OrderedDictionary<string,string> dict1 = new OrderedDictionary<string,string>();
 
-			Assert.IsFalse(dict1.ContainsKey(null));
+            Assert.IsFalse(dict1.ContainsKey(null));
 
-			dict1.Add("q",null);
-			dict1.Add("a", "hello");
-			dict1.Add(null, "goodbye");
+            dict1.Add("q",null);
+            dict1.Add("a", "hello");
+            dict1.Add(null, "goodbye");
 
-			ICollection keysCollection = ((IDictionary)dict1).Keys;
-			ICollection<string> keysGenCollection = dict1.Keys;
-			ICollection valuesCollection = ((IDictionary)dict1).Values;
-			ICollection<string> valuesGenCollection = dict1.Values;
+            ICollection keysCollection = ((IDictionary)dict1).Keys;
+            ICollection<string> keysGenCollection = dict1.Keys;
+            ICollection valuesCollection = ((IDictionary)dict1).Values;
+            ICollection<string> valuesGenCollection = dict1.Values;
 
-			InterfaceTests.TestCollection<string>(keysCollection, new string[] { null, "a", "q" }, true);
+            InterfaceTests.TestCollection<string>(keysCollection, new string[] { null, "a", "q" }, true);
             InterfaceTests.TestReadonlyCollectionGeneric(keysGenCollection, new string[] { null, "a", "q" }, true, "KeysCollection");
             InterfaceTests.TestCollection<string>(valuesCollection, new string[] { "goodbye", "hello", null }, true);
             InterfaceTests.TestReadonlyCollectionGeneric<string>(valuesGenCollection, new string[] { "goodbye", "hello", null }, true, "ValuesCollection");
 
             Assert.IsNull(dict1["q"]);
-			Assert.AreEqual("goodbye", dict1[null]);
-			Assert.IsTrue(dict1.ContainsKey(null));
+            Assert.AreEqual("goodbye", dict1[null]);
+            Assert.IsTrue(dict1.ContainsKey(null));
 
-			// Enumerate key/values directly. The pair with a null key will be enumerated.
-			int i = 0;
-			foreach (KeyValuePair<string,string> pair in dict1)
-			{
+            // Enumerate key/values directly. The pair with a null key will be enumerated.
+            int i = 0;
+            foreach (KeyValuePair<string,string> pair in dict1)
+            {
                 if (i == 0) {
                     Assert.AreEqual(null, pair.Key);
                     Assert.AreEqual("goodbye", pair.Value);
                 }
                 else if (i == 1) {
-					Assert.AreEqual("a", pair.Key);
-					Assert.AreEqual("hello", pair.Value);
-				}
-				else if (i == 2)
-				{
-					Assert.AreEqual("q", pair.Key);
-					Assert.AreEqual(null, pair.Value);
-				}
-				else
-				{
-					Assert.Fail("should only enumerate two items");
-				}
+                    Assert.AreEqual("a", pair.Key);
+                    Assert.AreEqual("hello", pair.Value);
+                }
+                else if (i == 2)
+                {
+                    Assert.AreEqual("q", pair.Key);
+                    Assert.AreEqual(null, pair.Value);
+                }
+                else
+                {
+                    Assert.Fail("should only enumerate two items");
+                }
 
-				++i;
-			}
+                ++i;
+            }
 
-			dict1.Remove(null);
-			Assert.IsFalse(dict1.ContainsKey(null));
-		}	
+            dict1.Remove(null);
+            Assert.IsFalse(dict1.ContainsKey(null));
+        }
 
-		/// <summary>
-		/// Check that enumerators are enumerating the correct keys and values.
-		/// </summary>
-		/// <param name="inorder">An IEnumerable enumerating in order</param>
-		/// <param name="reversed">An IEnumerable enumerating reversed</param>
-		/// <param name="keys">Expected keys in order</param>
-		/// <param name="values">Expected values in order</param>
-		void CheckEnumeration<TKey,TValue> (IEnumerable<KeyValuePair<TKey,TValue>> inorder, IEnumerable<KeyValuePair<TKey,TValue>> reversed,
-																				TKey[] keys, TValue[] values)
-		{
-			int i = 0;
+        /// <summary>
+        /// Check that enumerators are enumerating the correct keys and values.
+        /// </summary>
+        /// <param name="inorder">An IEnumerable enumerating in order</param>
+        /// <param name="reversed">An IEnumerable enumerating reversed</param>
+        /// <param name="keys">Expected keys in order</param>
+        /// <param name="values">Expected values in order</param>
+        void CheckEnumeration<TKey,TValue> (IEnumerable<KeyValuePair<TKey,TValue>> inorder, IEnumerable<KeyValuePair<TKey,TValue>> reversed,
+                                                                                TKey[] keys, TValue[] values)
+        {
+            int i = 0;
 
-			foreach (KeyValuePair<TKey,TValue> pair in inorder)
-			{
-				Assert.AreEqual(keys[i], pair.Key);
-				Assert.AreEqual(values[i], pair.Value);
-				++i;
-			}
+            foreach (KeyValuePair<TKey,TValue> pair in inorder)
+            {
+                Assert.AreEqual(keys[i], pair.Key);
+                Assert.AreEqual(values[i], pair.Value);
+                ++i;
+            }
             Assert.AreEqual(i, keys.Length);
 
             i = 0;
-			foreach (KeyValuePair<TKey,TValue> pair in reversed)
-			{
-				Assert.AreEqual(keys[keys.Length - i - 1], pair.Key);
-				Assert.AreEqual(values[values.Length - i - 1], pair.Value);
-				++i;
-			}
+            foreach (KeyValuePair<TKey,TValue> pair in reversed)
+            {
+                Assert.AreEqual(keys[keys.Length - i - 1], pair.Key);
+                Assert.AreEqual(values[values.Length - i - 1], pair.Value);
+                ++i;
+            }
             Assert.AreEqual(i, keys.Length);
         }
 
         [Test]
-		public void Enumerate()
-		{
-			OrderedDictionary<string,int> dict1 = new OrderedDictionary<string,int>();
+        public void Enumerate()
+        {
+            OrderedDictionary<string,int> dict1 = new OrderedDictionary<string,int>();
 
-			dict1["foo"] = 23;
-			dict1["a"] = 11;
-			dict1["b"] = 119;
-			dict1[""] = 981;
-			dict1["r4"] = 9;
-			dict1["b"] = 7;
-			dict1["hello"] = 198;
-			dict1["q"] = 199;
-			dict1["ww"] = -8;
-			dict1["ww"] = -9;
-			dict1["p"] = 1234;
-			
-			CheckEnumeration(dict1, dict1.Reversed(),
-					new string[] {"", "a", "b", "foo", "hello", "p", "q", "r4", "ww" },
-			        new int[] {981, 11, 7, 23, 198, 1234, 199, 9, -9});
-		}
+            dict1["foo"] = 23;
+            dict1["a"] = 11;
+            dict1["b"] = 119;
+            dict1[""] = 981;
+            dict1["r4"] = 9;
+            dict1["b"] = 7;
+            dict1["hello"] = 198;
+            dict1["q"] = 199;
+            dict1["ww"] = -8;
+            dict1["ww"] = -9;
+            dict1["p"] = 1234;
 
-		/// <summary>
-		/// Test that cloning works.
-		/// </summary>
-		[Test]
-		public void Clone()
-		{
-			OrderedDictionary<string,int> dict1 = new OrderedDictionary<string,int>();
-			OrderedDictionary<string,int> dict2, dict3;
+            CheckEnumeration(dict1, dict1.Reversed(),
+                    new string[] {"", "a", "b", "foo", "hello", "p", "q", "r4", "ww" },
+                    new int[] {981, 11, 7, 23, 198, 1234, 199, 9, -9});
+        }
 
-			dict1["foo"] = 23;
-			dict1["a"] = 11;
-			dict1["b"] = 119;
-			dict1[""] = 981;
-			dict1["r4"] = 9;
-			dict1["b"] = 7;
-			dict1["hello"] = 198;
-			dict1["q"] = 199;
-			dict1["ww"] = -8;
-			dict1["ww"] = -9;
-			dict1["p"] = 1234;
+        /// <summary>
+        /// Test that cloning works.
+        /// </summary>
+        [Test]
+        public void Clone()
+        {
+            OrderedDictionary<string,int> dict1 = new OrderedDictionary<string,int>();
+            OrderedDictionary<string,int> dict2, dict3;
 
-			dict2 = dict1.Clone();
+            dict1["foo"] = 23;
+            dict1["a"] = 11;
+            dict1["b"] = 119;
+            dict1[""] = 981;
+            dict1["r4"] = 9;
+            dict1["b"] = 7;
+            dict1["hello"] = 198;
+            dict1["q"] = 199;
+            dict1["ww"] = -8;
+            dict1["ww"] = -9;
+            dict1["p"] = 1234;
+
+            dict2 = dict1.Clone();
             dict3 = (OrderedDictionary<string, int>)((ICloneable)dict1).Clone();
 
             Assert.IsFalse(dict2 == dict1);
 
-			// Modify dict1, make sure dict2 doesn't change.
-			dict1.Remove("a");
-			dict1.Remove("b");
-			dict1.Remove("");
-			dict1["qqq"] = 1;
+            // Modify dict1, make sure dict2 doesn't change.
+            dict1.Remove("a");
+            dict1.Remove("b");
+            dict1.Remove("");
+            dict1["qqq"] = 1;
 
-			CheckEnumeration(dict2, dict2.Reversed(), new string[] { "", "a", "b", "foo", "hello", "p", "q", "r4", "ww" }, new int[] { 981, 11, 7, 23, 198, 1234, 199, 9, -9 });
-			Assert.AreEqual(981, dict2[""]);
+            CheckEnumeration(dict2, dict2.Reversed(), new string[] { "", "a", "b", "foo", "hello", "p", "q", "r4", "ww" }, new int[] { 981, 11, 7, 23, 198, 1234, 199, 9, -9 });
+            Assert.AreEqual(981, dict2[""]);
 
             CheckEnumeration(dict3, dict3.Reversed(), new string[] { "", "a", "b", "foo", "hello", "p", "q", "r4", "ww" }, new int[] { 981, 11, 7, 23, 198, 1234, 199, 9, -9 });
             Assert.AreEqual(981, dict3[""]);
@@ -900,7 +907,7 @@ namespace Wintellect.PowerCollections.Tests
 
         class NotCloneable {  }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void CantCloneContents()
         {
             OrderedDictionary<int, NotCloneable> dict1 = new OrderedDictionary<int,NotCloneable>();
@@ -908,7 +915,10 @@ namespace Wintellect.PowerCollections.Tests
             dict1[4] = new NotCloneable();
             dict1[5] = new NotCloneable();
 
-            OrderedDictionary<int, NotCloneable> dict2 = dict1.CloneContents();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedDictionary<int, NotCloneable> dict2 = dict1.CloneContents();
+            });
         }
 
         // Check that a View has the correct keys and values in it.
@@ -950,7 +960,7 @@ namespace Wintellect.PowerCollections.Tests
             dict1["ww"] = -9;
             dict1["p"] = 1234;
 
-            CheckView(dict1.Range("a", true, "z", false), 
+            CheckView(dict1.Range("a", true, "z", false),
                                         new string[] { "a", "b", "foo", "hello", "p", "q", "r4", "ww" },
                                         new int[] { 11, 7, 23, 198, 1234, 199, 9, -9 },
                                         "");
@@ -1122,9 +1132,9 @@ namespace Wintellect.PowerCollections.Tests
 
             InterfaceTests.TestCollection<DictionaryEntry>((ICollection)dict1,
                 new DictionaryEntry[] {
-                    new DictionaryEntry(3, "foo"), 
-                    new DictionaryEntry(8, "bar"), 
-                    new DictionaryEntry(9, "baz"), 
+                    new DictionaryEntry(3, "foo"),
+                    new DictionaryEntry(8, "bar"),
+                    new DictionaryEntry(9, "baz"),
                     new DictionaryEntry(12, "biff") },
                 true);
         }
@@ -1139,11 +1149,11 @@ namespace Wintellect.PowerCollections.Tests
             dict1[12] = "biff";
             dict1[3] = "foo";
 
-            InterfaceTests.TestReadWriteCollectionGeneric<KeyValuePair<int, string>>((ICollection<KeyValuePair<int, string>>)dict1, 
+            InterfaceTests.TestReadWriteCollectionGeneric<KeyValuePair<int, string>>((ICollection<KeyValuePair<int, string>>)dict1,
                 new KeyValuePair<int,string>[] {
-                    new KeyValuePair<int,string>(3, "foo"), 
-                    new KeyValuePair<int,string>(8, "bar"), 
-                    new KeyValuePair<int,string>(9, "baz"), 
+                    new KeyValuePair<int,string>(3, "foo"),
+                    new KeyValuePair<int,string>(8, "bar"),
+                    new KeyValuePair<int,string>(9, "baz"),
                     new KeyValuePair<int,string>(12, "biff") },
                 true);
         }
@@ -1168,10 +1178,10 @@ namespace Wintellect.PowerCollections.Tests
 
             InterfaceTests.TestReadWriteCollectionGeneric<KeyValuePair<int, string>>((ICollection<KeyValuePair<int, string>>)dict1,
                new KeyValuePair<int, string>[] {
-                    new KeyValuePair<int,string>(0, "fribble"), 
-                    new KeyValuePair<int,string>(3, "hello"), 
-                    new KeyValuePair<int,string>(8, "banana"), 
-                    new KeyValuePair<int,string>(9, "baz"), 
+                    new KeyValuePair<int,string>(0, "fribble"),
+                    new KeyValuePair<int,string>(3, "hello"),
+                    new KeyValuePair<int,string>(8, "banana"),
+                    new KeyValuePair<int,string>(9, "baz"),
                     new KeyValuePair<int,string>(12, "biff"),
                     new KeyValuePair<int,string>(123, "biff")},
                true);
@@ -1195,7 +1205,7 @@ namespace Wintellect.PowerCollections.Tests
 
             InterfaceTests.TestReadWriteCollectionGeneric<KeyValuePair<int, string>>((ICollection<KeyValuePair<int, string>>)dict1,
                new KeyValuePair<int, string>[] {
-                    new KeyValuePair<int,string>(9, "baz"), 
+                    new KeyValuePair<int,string>(9, "baz"),
                     new KeyValuePair<int,string>(12, "biff") },
                true);
         }
@@ -1226,7 +1236,7 @@ namespace Wintellect.PowerCollections.Tests
             InterfaceTests.TestReadWriteDictionaryGeneric<string, int>(dict1, s_array_sorted, i_array_sorted, "foo", true, "ReadOnlyTestDictionary", null, null);
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void FailFastEnumerator1()
         {
             OrderedDictionary<double, int> dict1 = new OrderedDictionary<double, int>();
@@ -1238,13 +1248,17 @@ namespace Wintellect.PowerCollections.Tests
             }
 
             // enumeration of the Keys collection should throw once the dictionary is modified.
-            foreach (double k in dict1.Keys) {
-                if (k > 3.0)
-                    dict1[4.5] = 9;
-            }
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                foreach (double k in dict1.Keys)
+                {
+                    if (k > 3.0)
+                        dict1[4.5] = 9;
+                }
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void FailFastEnumerator2()
         {
             OrderedDictionary<double, int> dict1 = new OrderedDictionary<double, int>();
@@ -1256,10 +1270,14 @@ namespace Wintellect.PowerCollections.Tests
             }
 
             // enumeration of a view should throw once the dictionary is modified.
-            foreach (KeyValuePair<double,int> p in dict1.Range(1.7, true, 11.4, false)) {
-                if (p.Key > 7.0)
-                    dict1.Clear();
-            }
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                foreach (KeyValuePair<double, int> p in dict1.Range(1.7, true, 11.4, false))
+                {
+                    if (p.Key > 7.0)
+                        dict1.Clear();
+                }
+            });
         }
 
         [Test]

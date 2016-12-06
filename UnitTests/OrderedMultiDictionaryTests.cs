@@ -2,7 +2,7 @@
 // Written by Peter Golde
 // Copyright (c) 2004-2005, Wintellect
 //
-// Use and restribution of this code is subject to the license agreement 
+// Use and restribution of this code is subject to the license agreement
 // contained in the file "License.txt" accompanying this file.
 //******************************
 
@@ -269,7 +269,7 @@ namespace Wintellect.PowerCollections.Tests
             dict2.Add("Foo", "bar");
             InterfaceTests.TestEnumerableElements<string>(dict2.Keys, new string[] { "Foo" });
             InterfaceTests.TestEnumerableElements<string>(dict2["FOO"], new string[] { "bar" });
-            dict2 = new OrderedMultiDictionary<string, string>(true, StringComparer.InvariantCultureIgnoreCase, StringComparer.InvariantCultureIgnoreCase); 
+            dict2 = new OrderedMultiDictionary<string, string>(true, StringComparer.InvariantCultureIgnoreCase, StringComparer.InvariantCultureIgnoreCase);
             dict2.Add("foo", "BAR");
             dict2.Add("Foo", "bar");
             InterfaceTests.TestEnumerableElements<string>(dict2.Keys, new string[] { "foo" });
@@ -296,7 +296,7 @@ namespace Wintellect.PowerCollections.Tests
             InterfaceTests.TestEnumerableElements(dict1.Keys, new string[] { "FOO" });
             InterfaceTests.TestEnumerableElements(dict1["fOo"], new double[] { -9, 1.2, 4, 8, 9.8 });
             InterfaceTests.TestEnumerableElements<KeyValuePair<string, double>>
-                (dict1.KeyValuePairs, new KeyValuePair<string, double>[] { 
+                (dict1.KeyValuePairs, new KeyValuePair<string, double>[] {
                             new KeyValuePair<string,double>("FOO", -9),
                             new KeyValuePair<string,double>("foo", 1.2),
                             new KeyValuePair<string,double>("foo", 4),
@@ -318,7 +318,7 @@ namespace Wintellect.PowerCollections.Tests
             InterfaceTests.TestEnumerableElements(dict1.Keys, new string[] { "a", "foo"});
             InterfaceTests.TestEnumerableElements(dict1["fOo"], new double[] { -9, -9, -9, 1.2, 4, 8, 9.8, 9.8 });
             InterfaceTests.TestEnumerableElements<KeyValuePair<string, double>>
-                (dict1.KeyValuePairs, new KeyValuePair<string, double>[] { 
+                (dict1.KeyValuePairs, new KeyValuePair<string, double>[] {
                             new KeyValuePair<string,double>("a", 1),
                             new KeyValuePair<string,double>("a", 2),
                             new KeyValuePair<string,double>("a", 2),
@@ -898,7 +898,7 @@ namespace Wintellect.PowerCollections.Tests
                     return 1;
                 else if (x[0] > y[0])
                     return -1;
-                else 
+                else
                     return 0;
             };
 
@@ -940,16 +940,22 @@ namespace Wintellect.PowerCollections.Tests
                 new KeyValuePair<string,string>("queztel", "hello")});
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void NotComparable1()
         {
-            OrderedMultiDictionary<OrderedDictionaryTests.UncomparableClass1, string> dict1 = new OrderedMultiDictionary<OrderedDictionaryTests.UncomparableClass1, string>(false);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedMultiDictionary<OrderedDictionaryTests.UncomparableClass1, string> dict1 = new OrderedMultiDictionary<OrderedDictionaryTests.UncomparableClass1, string>(false);
+            });
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void NotComparable2()
         {
-            OrderedMultiDictionary<string, OrderedDictionaryTests.UncomparableClass2> dict2 = new OrderedMultiDictionary<string, OrderedDictionaryTests.UncomparableClass2>(true);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedMultiDictionary<string, OrderedDictionaryTests.UncomparableClass2> dict2 = new OrderedMultiDictionary<string, OrderedDictionaryTests.UncomparableClass2>(true);
+            });
         }
 
         [Test]
@@ -1054,14 +1060,14 @@ namespace Wintellect.PowerCollections.Tests
         [Test]
         public void CloneContents()
         {
-            Comparison<MyInt> myIntComparison = 
-                delegate(MyInt v1, MyInt v2) { 
-                    if (v1 == null) 
-                        return (v2 == null) ? 0 : -1; 
+            Comparison<MyInt> myIntComparison =
+                delegate(MyInt v1, MyInt v2) {
+                    if (v1 == null)
+                        return (v2 == null) ? 0 : -1;
                     else if (v2 == null)
                         return 1;
                     else
-                        return v2.value.CompareTo(v1.value); 
+                        return v2.value.CompareTo(v1.value);
                 };
 
             OrderedMultiDictionary<int, MyInt> dict1 = new OrderedMultiDictionary<int, MyInt>(true,
@@ -1121,7 +1127,7 @@ namespace Wintellect.PowerCollections.Tests
         }
 
         class NotCloneable: IComparable<NotCloneable>
-        { 
+        {
             public int  CompareTo(NotCloneable other)
             {
  	            return 0;
@@ -1133,7 +1139,7 @@ namespace Wintellect.PowerCollections.Tests
             }
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void CantCloneContents()
         {
             OrderedMultiDictionary<int, NotCloneable> dict1 = new OrderedMultiDictionary<int, NotCloneable>(true);
@@ -1141,7 +1147,10 @@ namespace Wintellect.PowerCollections.Tests
             dict1[4] = new NotCloneable[] { new NotCloneable() };
             dict1[5] = new NotCloneable[] { new NotCloneable(), new NotCloneable() };
 
-            OrderedMultiDictionary<int, NotCloneable> dict2 = dict1.CloneContents();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                OrderedMultiDictionary<int, NotCloneable> dict2 = dict1.CloneContents();
+            });
         }
 
 
@@ -1391,7 +1400,7 @@ namespace Wintellect.PowerCollections.Tests
                     Assert.IsTrue(e is ArgumentException);
                 }
             }
-            
+
             // Test IDictionary<TKey,IEnumerable<TValue>> implementation
             InterfaceTests.TestReadWriteMultiDictionaryGeneric<TKey, TValue>(dict, keys, values, nonKey, nonValue, true, "OrderedMultiDictionary", null, null);
         }

@@ -2,7 +2,7 @@
 // Written by Peter Golde
 // Copyright (c) 2004-2005, Wintellect
 //
-// Use and restribution of this code is subject to the license agreement 
+// Use and restribution of this code is subject to the license agreement
 // contained in the file "License.txt" accompanying this file.
 //******************************
 
@@ -55,7 +55,7 @@ namespace Wintellect.PowerCollections.Tests
 
         public override bool Equals(object obj)
         {
-            if (obj is OddEvenComparable) 
+            if (obj is OddEvenComparable)
                 return CompareTo((OddEvenComparable) obj) == 0;
             else
                 return false;
@@ -204,7 +204,7 @@ namespace Wintellect.PowerCollections.Tests
     [TestFixture]
     public class ComparersTests
     {
-        // Comparison function 
+        // Comparison function
         public static int CompareOddEven(int e1, int e2)
         {
             if ((e1 & 1) == 1 && (e2 & 1) == 0)
@@ -385,10 +385,12 @@ namespace Wintellect.PowerCollections.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException), "Type \"Wintellect.PowerCollections.Tests.Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.Unorderable> or IComparable.")]
         public void UnorderableType2()
         {
-            IComparer<Unorderable> ordering = Comparers.DefaultComparer<Unorderable>();
+            IComparer<Unorderable> ordering;
+            Assert.Throws<InvalidOperationException>(() => ordering = Comparers.DefaultComparer<Unorderable>(),
+                "Type \"Wintellect.PowerCollections.Tests.Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.Unorderable> or IComparable.",
+                null);
         }
     }
 }

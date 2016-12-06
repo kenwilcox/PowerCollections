@@ -2,7 +2,7 @@
 // Written by Peter Golde
 // Copyright (c) 2004-2005, Wintellect
 //
-// Use and restribution of this code is subject to the license agreement 
+// Use and restribution of this code is subject to the license agreement
 // contained in the file "License.txt" accompanying this file.
 //******************************
 
@@ -119,7 +119,7 @@ namespace Wintellect.PowerCollections.Tests
         }
 
         /// <summary>
-        /// Test basic Triple creation.  
+        /// Test basic Triple creation.
         /// </summary>
         [Test]
         public void Creation()
@@ -258,33 +258,39 @@ namespace Wintellect.PowerCollections.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException), "Type \"Wintellect.PowerCollections.Tests.TripleTests+Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.TripleTests+Unorderable> or IComparable.")]
         public void UncomparableFirst()
         {
             Triple<Unorderable, int, string> triple1, triple2;
             triple1 = new Triple<Unorderable, int, string>(new Unorderable(), 5, "hello");
             triple2 = new Triple<Unorderable, int, string>(new Unorderable(), 7, "world");
-            int compare = triple1.CompareTo(triple2);
+            int compare;
+            Assert.Throws<NotSupportedException>(() => compare = triple1.CompareTo(triple2),
+                "Type \"Wintellect.PowerCollections.Tests.TripleTests+Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.TripleTests+Unorderable> or IComparable.",
+                null);
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException), "Type \"Wintellect.PowerCollections.Tests.TripleTests+Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.TripleTests+Unorderable> or IComparable.")]
         public void UncomparableSecond()
         {
             Triple<int, Unorderable, string> triple1, triple2;
             triple1 = new Triple<int, Unorderable, string>(3, new Unorderable(), "Eric");
             triple2 = new Triple<int, Unorderable, string>(3, new Unorderable(), "Clapton");
-            int compare = triple1.CompareTo(triple2);
+            int compare;
+            Assert.Throws<NotSupportedException>(() => compare = triple1.CompareTo(triple2),
+                "Type \"Wintellect.PowerCollections.Tests.TripleTests+Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.TripleTests+Unorderable> or IComparable.",
+                null);
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException), "Type \"Wintellect.PowerCollections.Tests.TripleTests+Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.TripleTests+Unorderable> or IComparable.")]
         public void UncomparableThird()
         {
             Triple<int, string, Unorderable> triple1, triple2;
             triple1 = new Triple<int, string, Unorderable>(3, "Oasis", new Unorderable());
             triple2 = new Triple<int, string, Unorderable>(3, "Oasis", new Unorderable());
-            int compare = triple1.CompareTo(triple2);
+            int compare;
+            Assert.Throws<NotSupportedException>(() => compare = triple1.CompareTo(triple2),
+                "Type \"Wintellect.PowerCollections.Tests.TripleTests+Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.TripleTests+Unorderable> or IComparable.",
+                null);
         }
 
         [Test]

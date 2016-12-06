@@ -1113,7 +1113,7 @@ namespace Wintellect.PowerCollections.Tests
 
         class NotCloneable { }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void CantCloneContents()
         {
             MultiDictionary<int, NotCloneable> dict1 = new MultiDictionary<int, NotCloneable>(true);
@@ -1121,7 +1121,8 @@ namespace Wintellect.PowerCollections.Tests
             dict1[4] = new NotCloneable[] { new NotCloneable() };
             dict1[5] = new NotCloneable[] { new NotCloneable(), new NotCloneable() };
 
-            MultiDictionary<int, NotCloneable> dict2 = dict1.CloneContents();
+            MultiDictionary<int, NotCloneable> dict2;
+            Assert.Throws<InvalidOperationException>(() => dict2 = dict1.CloneContents());
         }
 
 

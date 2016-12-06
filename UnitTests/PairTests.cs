@@ -2,7 +2,7 @@
 // Written by Peter Golde
 // Copyright (c) 2004-2005, Wintellect
 //
-// Use and restribution of this code is subject to the license agreement 
+// Use and restribution of this code is subject to the license agreement
 // contained in the file "License.txt" accompanying this file.
 //******************************
 
@@ -13,12 +13,12 @@ using NUnit.Framework;
 
 namespace Wintellect.PowerCollections.Tests
 {
-	/// <summary>
-	/// Tests for the Pair struct.
-	/// </summary>
-	[TestFixture]
-	public class PairTests
-	{
+    /// <summary>
+    /// Tests for the Pair struct.
+    /// </summary>
+    [TestFixture]
+    public class PairTests
+    {
         /// <summary>
         /// Class that doesn't implement any IComparable.
         /// </summary>
@@ -118,147 +118,151 @@ namespace Wintellect.PowerCollections.Tests
         }
 
         /// <summary>
-        /// Test basic Pair creation.  
-		/// </summary>
-		[Test]
-		public void Creation()
-		{
-			Pair<int,double> p1 = new Pair<int,double>();
+        /// Test basic Pair creation.
+        /// </summary>
+        [Test]
+        public void Creation()
+        {
+            Pair<int,double> p1 = new Pair<int,double>();
 
-			Assert.AreEqual(0, p1.First);
-			Assert.AreEqual(0.0, p1.Second);
+            Assert.AreEqual(0, p1.First);
+            Assert.AreEqual(0.0, p1.Second);
 
-			Pair<int,string> p2 = new Pair<int,string>(42, "hello");
+            Pair<int,string> p2 = new Pair<int,string>(42, "hello");
 
-			Assert.AreEqual(42, p2.First);
-			Assert.AreEqual("hello", p2.Second);
+            Assert.AreEqual(42, p2.First);
+            Assert.AreEqual("hello", p2.Second);
 
-			Pair<string,object> p3 = new Pair<string,object>();
+            Pair<string,object> p3 = new Pair<string,object>();
 
-			Assert.IsNull(p3.First);
-			Assert.IsNull(p3.Second);
+            Assert.IsNull(p3.First);
+            Assert.IsNull(p3.Second);
 
-			object o = new object();
-			Pair<Pair<string,int>,object> p4 = new Pair<Pair<string,int>,object>(new Pair<string,int>("foo", 12), o);
-			Pair<string,int> p5 = p4.First;
+            object o = new object();
+            Pair<Pair<string,int>,object> p4 = new Pair<Pair<string,int>,object>(new Pair<string,int>("foo", 12), o);
+            Pair<string,int> p5 = p4.First;
 
-			Assert.AreEqual("foo", p5.First);
-			Assert.AreEqual(12, p5.Second);
-			Assert.AreSame(o, p4.Second);
-		}
+            Assert.AreEqual("foo", p5.First);
+            Assert.AreEqual(12, p5.Second);
+            Assert.AreSame(o, p4.Second);
+        }
 
-		/// <summary>
-		/// Test get and set of First and Second.
-		/// </summary>
-		[Test]
-		public void Elements()
-		{
-			Pair<int,string> p1 = new Pair<int,string>();
-			string s = new string('z', 3);
+        /// <summary>
+        /// Test get and set of First and Second.
+        /// </summary>
+        [Test]
+        public void Elements()
+        {
+            Pair<int,string> p1 = new Pair<int,string>();
+            string s = new string('z', 3);
 
-			p1.First = 217;
-			p1.Second = s;
-			Assert.AreEqual(217, p1.First);
-			Assert.AreSame(s, p1.Second);
+            p1.First = 217;
+            p1.Second = s;
+            Assert.AreEqual(217, p1.First);
+            Assert.AreSame(s, p1.Second);
 
-			Pair<string,int> p2 = new Pair<string,int>("hello", 1);
-			p2.Second = 212;
-			p2.First = s;
-			Assert.AreEqual(212, p2.Second);
-			Assert.AreSame(s, p2.First);
-			p2.First = null;
-			Assert.IsNull(p2.First);
-		}
+            Pair<string,int> p2 = new Pair<string,int>("hello", 1);
+            p2.Second = 212;
+            p2.First = s;
+            Assert.AreEqual(212, p2.Second);
+            Assert.AreSame(s, p2.First);
+            p2.First = null;
+            Assert.IsNull(p2.First);
+        }
 
-		[Test]
-		public void Equals()
-		{
-			Pair<int,string> p1 = new Pair<int,string>(42, new string('z', 3));
-			Pair<int,string> p2 = new Pair<int,string>(53, new string('z', 3));
-			Pair<int,string> p3 = new Pair<int,string>(42, new string('z', 4));
-			Pair<int,string> p4 = new Pair<int,string>(42, new string('z', 3));
-			Pair<int,string> p5 = new Pair<int,string>(122, new string('y', 3));
-			Pair<int,string> p6 = new Pair<int,string>(122, null);
-			Pair<int,string> p7 = new Pair<int,string>(122, null);
-			bool f;
+        [Test]
+        public void Equals()
+        {
+            Pair<int,string> p1 = new Pair<int,string>(42, new string('z', 3));
+            Pair<int,string> p2 = new Pair<int,string>(53, new string('z', 3));
+            Pair<int,string> p3 = new Pair<int,string>(42, new string('z', 4));
+            Pair<int,string> p4 = new Pair<int,string>(42, new string('z', 3));
+            Pair<int,string> p5 = new Pair<int,string>(122, new string('y', 3));
+            Pair<int,string> p6 = new Pair<int,string>(122, null);
+            Pair<int,string> p7 = new Pair<int,string>(122, null);
+            bool f;
 
-			f = p1.Equals(p2);		Assert.IsFalse(f);
-			f = p1.Equals(p3);		Assert.IsFalse(f);
-			f = p1.Equals(p4);		Assert.IsTrue(f);
-			f = p1.Equals(p5);		Assert.IsFalse(f);
-			f = p1.Equals("hi");		Assert.IsFalse(f);
-			f = p6.Equals(p7);		Assert.IsTrue(f);
-			f = p1 == p2;		Assert.IsFalse(f);
-			f = p1 == p3;		Assert.IsFalse(f);
-			f = p1 == p4;		Assert.IsTrue(f);
-			f = p1 == p5;		Assert.IsFalse(f);
-			f = p6 == p7;		Assert.IsTrue(f);
-			f = p1 != p2;		Assert.IsTrue(f);
-			f = p1 != p3;		Assert.IsTrue(f);
-			f = p1 != p4;		Assert.IsFalse(f);
-			f = p1 != p5;		Assert.IsTrue(f);
-			f = p6 != p7;		Assert.IsFalse(f);
-		}
+            f = p1.Equals(p2);		Assert.IsFalse(f);
+            f = p1.Equals(p3);		Assert.IsFalse(f);
+            f = p1.Equals(p4);		Assert.IsTrue(f);
+            f = p1.Equals(p5);		Assert.IsFalse(f);
+            f = p1.Equals("hi");		Assert.IsFalse(f);
+            f = p6.Equals(p7);		Assert.IsTrue(f);
+            f = p1 == p2;		Assert.IsFalse(f);
+            f = p1 == p3;		Assert.IsFalse(f);
+            f = p1 == p4;		Assert.IsTrue(f);
+            f = p1 == p5;		Assert.IsFalse(f);
+            f = p6 == p7;		Assert.IsTrue(f);
+            f = p1 != p2;		Assert.IsTrue(f);
+            f = p1 != p3;		Assert.IsTrue(f);
+            f = p1 != p4;		Assert.IsFalse(f);
+            f = p1 != p5;		Assert.IsTrue(f);
+            f = p6 != p7;		Assert.IsFalse(f);
+        }
 
-		[Test]
-		public void HashCode()
-		{
-			Pair<int,string> p1 = new Pair<int,string>(42, new string('z', 3));
-			Pair<int,string> p2 = new Pair<int,string>(53, new string('z', 3));
-			Pair<int,string> p3 = new Pair<int,string>(42, new string('z', 4));
-			Pair<int,string> p4 = new Pair<int,string>(42, new string('z', 3));
-			Pair<int,string> p5 = new Pair<int,string>(122, new string('y', 3));
-			Pair<int,string> p6 = new Pair<int,string>(122, null);
-			Pair<int,string> p7 = new Pair<int,string>(122, null);
+        [Test]
+        public void HashCode()
+        {
+            Pair<int,string> p1 = new Pair<int,string>(42, new string('z', 3));
+            Pair<int,string> p2 = new Pair<int,string>(53, new string('z', 3));
+            Pair<int,string> p3 = new Pair<int,string>(42, new string('z', 4));
+            Pair<int,string> p4 = new Pair<int,string>(42, new string('z', 3));
+            Pair<int,string> p5 = new Pair<int,string>(122, new string('y', 3));
+            Pair<int,string> p6 = new Pair<int,string>(122, null);
+            Pair<int,string> p7 = new Pair<int,string>(122, null);
 
-			int h1 = p1.GetHashCode();
-			int h2 = p2.GetHashCode();
-			int h3 = p3.GetHashCode();
-			int h4 = p4.GetHashCode();
-			int h5 = p5.GetHashCode();
-			int h6 = p6.GetHashCode();
-			int h7 = p7.GetHashCode();
+            int h1 = p1.GetHashCode();
+            int h2 = p2.GetHashCode();
+            int h3 = p3.GetHashCode();
+            int h4 = p4.GetHashCode();
+            int h5 = p5.GetHashCode();
+            int h6 = p6.GetHashCode();
+            int h7 = p7.GetHashCode();
 
-			bool f;
-			f = h1 == h2;		Assert.IsFalse(f);
-			f = h1 == h3;		Assert.IsFalse(f);
-			f = h1 == h4;		Assert.IsTrue(f);
-			f = h1 == h5;		Assert.IsFalse(f);
-			f = h6 == h7;		Assert.IsTrue(f);
-		}
+            bool f;
+            f = h1 == h2;		Assert.IsFalse(f);
+            f = h1 == h3;		Assert.IsFalse(f);
+            f = h1 == h4;		Assert.IsTrue(f);
+            f = h1 == h5;		Assert.IsFalse(f);
+            f = h6 == h7;		Assert.IsTrue(f);
+        }
 
-		[Test]
-		public void Stringize()
-		{
-			Pair<int,string> p1 = new Pair<int,string>(42, new string('z', 3));
-			Pair<int,string> p2 = new Pair<int,string>(0, "hello");
-			Pair<int,string> p3 = new Pair<int,string>(-122, null);
-			Pair<string,int> p4 = new Pair<string,int>(null, 11);
+        [Test]
+        public void Stringize()
+        {
+            Pair<int,string> p1 = new Pair<int,string>(42, new string('z', 3));
+            Pair<int,string> p2 = new Pair<int,string>(0, "hello");
+            Pair<int,string> p3 = new Pair<int,string>(-122, null);
+            Pair<string,int> p4 = new Pair<string,int>(null, 11);
 
-			Assert.AreEqual("First: 42, Second: zzz", p1.ToString());
-			Assert.AreEqual("First: 0, Second: hello", p2.ToString());
-			Assert.AreEqual("First: -122, Second: null", p3.ToString());
+            Assert.AreEqual("First: 42, Second: zzz", p1.ToString());
+            Assert.AreEqual("First: 0, Second: hello", p2.ToString());
+            Assert.AreEqual("First: -122, Second: null", p3.ToString());
             Assert.AreEqual("First: null, Second: 11", p4.ToString());
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException), "Type \"Wintellect.PowerCollections.Tests.PairTests+Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.PairTests+Unorderable> or IComparable.")]
         public void UncomparableFirst()
         {
             Pair<Unorderable, int> pair1, pair2;
             pair1 = new Pair<Unorderable, int>(new Unorderable(), 5);
             pair2 = new Pair<Unorderable, int>(new Unorderable(), 7);
-            int compare = pair1.CompareTo(pair2);
+            int compare;
+            Assert.Throws<NotSupportedException>(() => compare = pair1.CompareTo(pair2),
+                "Type \"Wintellect.PowerCollections.Tests.PairTests+Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.PairTests+Unorderable> or IComparable.",
+                null);
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException), "Type \"Wintellect.PowerCollections.Tests.PairTests+Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.PairTests+Unorderable> or IComparable.")]
         public void UncomparableSecond()
         {
             Pair<int, Unorderable> pair1, pair2;
             pair1 = new Pair<int, Unorderable>(3, new Unorderable());
             pair2 = new Pair<int, Unorderable>(3, new Unorderable());
-            int compare = pair1.CompareTo(pair2);
+            int compare;
+            Assert.Throws<NotSupportedException>(() => compare = pair1.CompareTo(pair2),
+                "Type \"Wintellect.PowerCollections.Tests.PairTests+Unorderable\" does not implement IComparable<Wintellect.PowerCollections.Tests.PairTests+Unorderable> or IComparable.",
+                null);
         }
 
         [Test]
